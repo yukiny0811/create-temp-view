@@ -8,8 +8,8 @@ Expands
 ```
 in to this
 ```.swift
-public struct HelloView: View {
-    public var body: some View {
+struct HelloView: View {
+    var body: some View {
         Text("HelloView Temp View")
     }
 }
