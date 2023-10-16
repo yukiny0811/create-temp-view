@@ -18,8 +18,8 @@ public struct CreateTempViewMacro: DeclarationMacro {
         
         let resultString =
 """
-public struct \(str): View {
-    public var body: some View {
+struct \(str): View {
+    var body: some View {
         Text(\"\(str) Temp View\")
     }
 }
