@@ -3,31 +3,34 @@ import SwiftSyntax
 import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
 
-/// Implementation of the `stringify` macro, which takes an expression
-/// of any type and produces a tuple containing the value of that expression
-/// and the source code that produced the value. For example
-///
-///     #stringify(x + y)
-///
-///  will expand to
-///
-///     (x + y, "x + y")
-public struct StringifyMacro: ExpressionMacro {
-    public static func expansion(
-        of node: some FreestandingMacroExpansionSyntax,
-        in context: some MacroExpansionContext
-    ) -> ExprSyntax {
-        guard let argument = node.argumentList.first?.expression else {
-            fatalError("compiler bug: the macro does not have any arguments")
+public struct CreateTempViewMacro: DeclarationMacro {
+    public static func expansion(of node: some SwiftSyntax.FreestandingMacroExpansionSyntax, in context: some SwiftSyntaxMacros.MacroExpansionContext) throws -> [SwiftSyntax.DeclSyntax] {
+        guard let str = node
+            .argumentList
+            .first?
+            .expression
+            .as(StringLiteralExprSyntax.self)?
+            .segments
+            .first?
+            .description else {
+            return []
         }
-
-        return "(\(argument), \(literal: argument.description))"
+        
+        let resultString =
+"""
+public struct \(str): View {
+    public var body: some View {
+        Text(\"\(str) Temp View\")
+    }
+}
+"""
+        return [DeclSyntax(stringLiteral: resultString)]
     }
 }
 
 @main
-struct CreateTempViewPlugin: CompilerPlugin {
+struct DependencyExtensionPlugin: CompilerPlugin {
     let providingMacros: [Macro.Type] = [
-        StringifyMacro.self,
+        CreateTempViewMacro.self,
     ]
 }

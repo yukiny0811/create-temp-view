@@ -39,14 +39,5 @@ let package = Package(
 
         // A client of the library, which is able to use the macro in its own code.
         .executableTarget(name: "CreateTempViewClient", dependencies: ["CreateTempView"]),
-
-        // A test target used to develop the macro implementation.
-        .testTarget(
-            name: "CreateTempViewTests",
-            dependencies: [
-                "CreateTempViewMacros",
-                .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
-            ]
-        ),
     ]
 )
